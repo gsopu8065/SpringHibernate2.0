@@ -7,34 +7,43 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
 
+
+  <!--Session factory-->
 <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
   <property name="configLocation" ><value>hibernate.cfg.xml</value></property>
 </bean>
 
-<!--<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-	<property name="sessionFactory">
-	  <ref bean="sessionFactory" />
-	</property>
-</bean>-->
+  <!-- Hibernate Template -->
+<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+	<property name="sessionFactory"><ref bean="sessionFactory" /></property>
+</bean>
 
-<!--<bean id="pageDao" class="com.concretepage.dao.PageDaoImpl">
+  <!--Transaction Management -->
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+
+   <!--PageDAO-->
+<bean id="pageDao" class="com.concretepage.dao.PageDaoImpl">
     <property name="hibernateTemplate">
 	  <ref bean="hibernateTemplate" />
 	</property>
-</bean>-->
+</bean>
 
-<!--<aop:config>
-	<aop:pointcut id="dbOperation" expression="execution(* com.concretepage.dao.PageDaoImpl.*(..))" />
+
+
+<aop:config>
+	<aop:pointcut id="dbOperation" expression="execution(* com.concretepage.dao.PageDaoImpl.saveUser(..))" />
 	<aop:advisor advice-ref="txAdvice" pointcut-ref="dbOperation" />	
 </aop:config>
+
+
 <tx:advice id="txAdvice" transaction-manager="transactionManager" >
 	<tx:attributes>
-		<tx:method name="get*" read-only="true" isolation="READ_COMMITTED"/>
 		<tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" read-only="false" timeout="-1" />
 	</tx:attributes>
-</tx:advice>-->
-<!--<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-   <property name="sessionFactory" ref="sessionFactory" />
-</bean>-->
+</tx:advice>
+
 </beans>
  
